@@ -1,4 +1,5 @@
 # tempio
+
 A template helper for docker images which using [text/template](https://golang.org/pkg/text/template/) golang engine with [sprig functions](http://masterminds.github.io/sprig/).
 
 Support conf format:
@@ -27,7 +28,7 @@ echo '{"some": "value"}' | tempio \
 _When  `-out` is not supplied, the result is printed to the console._
 
 ```bash
-$ echo '{"some": "value"}' | tempio \
+$ echo '{"some": "value"}' | tempio \
     -template /usr/share/tempio/corefile
 > {"some": "value", "other": "value"}
 ```
@@ -36,7 +37,7 @@ $ echo '{"some": "value"}' | tempio \
 
 ```yaml
 - name: Setup tempio
-  uses: home-assistant/tempio@main
+  uses: muthur-command/tempio@main
 - name: Run tempio
   run: tempio -help
 ```

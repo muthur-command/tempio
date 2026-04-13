@@ -1,4 +1,4 @@
-module github.com/home-assistant/tempio
+module github.com/muthur-command/tempio
 
 go 1.24.0
 

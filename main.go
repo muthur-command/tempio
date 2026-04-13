@@ -19,7 +19,7 @@ func main() {
 		writer := flag.CommandLine.Output()
 
 		fmt.Fprintf(writer, "Version: %s\n", TempioVersion)
-		fmt.Fprintf(writer, "Documentation: https://github.com/home-assistant/tempio\n\n")
+		fmt.Fprintf(writer, "Documentation: https://github.com/muthur-command/tempio\n\n")
 
 		flag.PrintDefaults()
 	}
