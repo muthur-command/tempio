@@ -11,6 +11,11 @@ on:
 env:
   GOLANG_VERSION: "1.24"
 
+# Uploading release assets requires write; default token is often read-only.
+permissions:
+  contents: write
+  pull-requests: read
+
 jobs:
   build:
     name: Build ${{ matrix.variant.name }}
