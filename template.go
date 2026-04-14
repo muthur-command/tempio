@@ -10,7 +10,7 @@ import (
 )
 
 func renderTemplateFile(config *map[string]interface{}, file string) []byte {
-	// read Template
+	// read template
 	templateFile, err := os.ReadFile(file)
 	if err != nil {
 		log.Fatalf("Cant read template file %s - %s", file, err)

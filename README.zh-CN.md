@@ -1,14 +1,12 @@
 # tempio
 
-A template helper for docker images which using [text/template](https://golang.org/pkg/text/template/) golang engine with [sprig functions](http://masterminds.github.io/sprig/).
+一个用于 Docker 镜像的模板工具，基于 [text/template](https://golang.org/pkg/text/template/)（Golang 模板引擎）并支持 [sprig functions](http://masterminds.github.io/sprig/)。
 
-中文文档: [`README.zh-CN.md`](./README.zh-CN.md)
-
-Support conf format:
+支持的配置格式：
 
 - json
 
-## Basic Example
+## 基础示例
 
 ```bash
 tempio \
@@ -17,7 +15,7 @@ tempio \
     -out /etc/corefile
 ```
 
-## Pipe Example
+## 管道输入示例
 
 ```bash
 echo '{"some": "value"}' | tempio \
@@ -25,9 +23,9 @@ echo '{"some": "value"}' | tempio \
     -out /etc/corefile
 ```
 
-## No Outfile Example
+## 不指定输出文件示例
 
-_When  `-out` is not supplied, the result is printed to the console._
+_当未传入 `-out` 参数时，结果会直接输出到控制台。_
 
 ```bash
 $ echo '{"some": "value"}' | tempio \
@@ -35,7 +33,7 @@ $ echo '{"some": "value"}' | tempio \
 > {"some": "value", "other": "value"}
 ```
 
-## Add tempio to your GitHub actions
+## 在 GitHub Actions 中使用 tempio
 
 ```yaml
 - name: Setup tempio
