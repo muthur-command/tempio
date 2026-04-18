@@ -1,5 +1,5 @@
 name: "tempio"
-description: "A template helper for docker images which using text/template golang engine."
+description: "Muthur Command OS template helper for Docker images (Go text/template + sprig)."
 runs:
   using: "composite"
   steps:
