@@ -71,7 +71,7 @@ jobs:
 
       - name: Create pull request
         if: steps.token.outputs.skip != 'true'
-        uses: peter-evans/create-pull-request@271a5446e8300a2f3c1f0d6c263b4e4f3c02594 # v7.0.4
+        uses: peter-evans/create-pull-request@2f38cd26bfebe301a5ee90bdd6550a69dc3ef23f # v7.0.4
         with:
           token: ${{ secrets.TEMPIO_DOWNSTREAM_BUMP_TOKEN }}
           path: consumer
