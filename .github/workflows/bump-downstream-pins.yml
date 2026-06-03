@@ -9,6 +9,12 @@ name: Bump downstream tempio pins
 on:
   release:
     types: [published]
+  # Manual rerun when a release was published before this workflow existed, or only a draft existed.
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: Release tag (e.g. 2026.06.2)
+        required: true
 
 permissions:
   contents: read
@@ -43,7 +49,11 @@ jobs:
         if: steps.token.outputs.skip != 'true'
         id: version
         run: |
-          tag="${{ github.event.release.tag_name }}"
+          if [[ "${{ github.event_name }}" == "workflow_dispatch" ]]; then
+            tag="${{ inputs.tag }}"
+          else
+            tag="${{ github.event.release.tag_name }}"
+          fi
           echo "tag=${tag}" >> "$GITHUB_OUTPUT"
           echo "pin=${tag#mc_}" >> "$GITHUB_OUTPUT"
 
