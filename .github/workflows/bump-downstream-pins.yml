@@ -69,6 +69,8 @@ jobs:
           ref: mc
           token: ${{ secrets.TEMPIO_DOWNSTREAM_BUMP_TOKEN }}
           path: consumer
+          # Avoid duplicate Authorization when create-pull-request also uses the PAT.
+          persist-credentials: false
 
       - name: Apply tempio pin bump
         if: steps.token.outputs.skip != 'true'
@@ -85,6 +87,7 @@ jobs:
         with:
           token: ${{ secrets.TEMPIO_DOWNSTREAM_BUMP_TOKEN }}
           path: consumer
+          base: mc
           branch: "bump/tempio-${{ steps.version.outputs.pin }}"
           delete-branch: true
           labels: dependencies
