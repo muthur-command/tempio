@@ -15,7 +15,6 @@ permissions:
 
 jobs:
   bump:
-    if: ${{ secrets.TEMPIO_DOWNSTREAM_BUMP_TOKEN != '' }}
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
@@ -25,7 +24,23 @@ jobs:
           - operating-system
           - addons
     steps:
+      # secrets cannot be used in job/step `if:`; check in a run step instead.
+      - name: Check downstream bump token
+        id: token
+        env:
+          TEMPIO_DOWNSTREAM_BUMP_TOKEN: ${{ secrets.TEMPIO_DOWNSTREAM_BUMP_TOKEN }}
+        run: |
+          if [[ -z "${TEMPIO_DOWNSTREAM_BUMP_TOKEN}" ]]; then
+            echo "skip=true" >> "$GITHUB_OUTPUT"
+            echo "::warning::TEMPIO_DOWNSTREAM_BUMP_TOKEN is not set. Skipping downstream PRs for ${{ matrix.repo }}."
+            echo "Configure a PAT with contents:write on docker-base, operating-system, and addons."
+            echo "Renovate in those repos will still open PRs on its schedule if the Renovate app is enabled."
+          else
+            echo "skip=false" >> "$GITHUB_OUTPUT"
+          fi
+
       - name: Normalize release version
+        if: steps.token.outputs.skip != 'true'
         id: version
         run: |
           tag="${{ github.event.release.tag_name }}"
@@ -33,9 +48,11 @@ jobs:
           echo "pin=${tag#mc_}" >> "$GITHUB_OUTPUT"
 
       - name: Checkout tempio (scripts)
+        if: steps.token.outputs.skip != 'true'
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
 
       - name: Checkout ${{ matrix.repo }}
+        if: steps.token.outputs.skip != 'true'
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
         with:
           repository: muthur-command/${{ matrix.repo }}
@@ -44,6 +61,7 @@ jobs:
           path: consumer
 
       - name: Apply tempio pin bump
+        if: steps.token.outputs.skip != 'true'
         run: |
           chmod +x ./scripts/bump-downstream-tempio-pin.sh
           ./scripts/bump-downstream-tempio-pin.sh \
@@ -52,6 +70,7 @@ jobs:
             "${{ steps.version.outputs.tag }}"
 
       - name: Create pull request
+        if: steps.token.outputs.skip != 'true'
         uses: peter-evans/create-pull-request@271a5446e8300a2f3c1f0d6c263b4e4f3c02594 # v7.0.4
         with:
           token: ${{ secrets.TEMPIO_DOWNSTREAM_BUMP_TOKEN }}
@@ -70,13 +89,3 @@ jobs:
             - Rebuild downstream images (supervisor, plugins, docker, etc.) after docker-base is updated
 
             Also tracked by Renovate (`custom.regex` on `muthur-command/tempio` releases).
-
-  missing-token-hint:
-    if: ${{ secrets.TEMPIO_DOWNSTREAM_BUMP_TOKEN == '' }}
-    runs-on: ubuntu-latest
-    steps:
-      - name: Hint
-        run: |
-          echo "::warning::TEMPIO_DOWNSTREAM_BUMP_TOKEN is not set. Skipping downstream PRs."
-          echo "Configure a PAT with repo scope on docker-base, operating-system, addons."
-          echo "Renovate in those repos will still open PRs on its schedule if the Renovate app is enabled."
